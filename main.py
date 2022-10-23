@@ -13,14 +13,19 @@ uwb_port = '/dev/ttyUSBuwb'
 gps_btl = 115200
 gps_port = '/dev/ttyUSBgps'
 dataList = []
+now_time = TimeUtil.getYearHourTimeStr()
 
 
-def readData(_gpsSerial: mySerial, _uwbSerial: mySerial, mqtt: MqttService, file: FileUtil):
-    global dataList
-    # 存储一分钟数据后发布到服务器
+def readData(_gpsSerial: mySerial, _uwbSerial: mySerial, mqtt: MqttService, fileUtil:FileUtil):
+    global dataList,now_time
+    # 存储数据后发布到服务器
     if len(dataList) >= 5 * 10:
-        mqtt.MqttPublish(topic="uwb", payload=json.dumps(dataList))
-        file.write(dataList)
+        model = json.dumps({"gnssData": dataList})
+        mqtt.MqttPublish(topic="uwb", payload=model)
+        if TimeUtil.getYearHourTimeStr() != now_time:
+            now_time = TimeUtil.getYearHourTimeStr()
+            fileUtil = FileUtil("./gnssData/" + TimeUtil.getYearDayTimeStr(), now_time + ".txt")
+        fileUtil.write(dataList)
         print("data publish")
         dataList = []
 
@@ -39,12 +44,12 @@ def readData(_gpsSerial: mySerial, _uwbSerial: mySerial, mqtt: MqttService, file
                 dataList.append(data)
 
 
-def damon1():
+def mqttPublish():
     mqtt = MqttService(on_connect_func=MqttService.mqttConnect)
     gpsSerial = mySerial(port=gps_port, btl=gps_btl)
     uwbSerial = mySerial(port=uwb_port, btl=gps_btl)
-    fileUtil = FileUtil("./uwbData", TimeUtil.getYearTimeStr()+".txt")
-    RepeatingTimer(0.1, readData, (gpsSerial, uwbSerial, mqtt, fileUtil)).start()
+    fileUtil = FileUtil("./uwbData" + TimeUtil.getYearDayTimeStr(), now_time + ".txt")
+    RepeatingTimer(0.1, readData, (gpsSerial, uwbSerial, mqtt,fileUtil)).start()
 
 
 def damon2():
@@ -57,4 +62,5 @@ def damon2():
 
 
 if __name__ == '__main__':
-    damon1()
+    mqttPublish()
+

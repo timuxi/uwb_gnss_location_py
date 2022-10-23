@@ -50,6 +50,8 @@ class GnssUtil:
         """
         uncompressed = [[], []]
         for i in range(len(lon)):
-            uncompressed[0].append(GnssUtil.ddmm2dd(lon[i]-lon[0]) * 1000000 * 0.111)
-            uncompressed[1].append(GnssUtil.ddmm2dd(lat[i]-lat[0]) * 1000000 * 0.111)
+            if i==0 :
+                continue
+            uncompressed[0].append(GnssUtil.ddmm2dd(lon[i] - lon[0]) * 1000000 * 0.111)
+            uncompressed[1].append(GnssUtil.ddmm2dd(lat[i] - lat[0]) * 1000000 * 0.111)
         return uncompressed
