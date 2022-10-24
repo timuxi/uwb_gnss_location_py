@@ -14,14 +14,16 @@ gps_btl = 115200
 gps_port = '/dev/ttyUSBgps'
 dataList = []
 now_time = TimeUtil.getYearHourTimeStr()
+cnt = 0
 
 
-def readData(_gpsSerial: mySerial, _uwbSerial: mySerial, mqtt: MqttService, fileUtil:FileUtil):
-    global dataList,now_time
+def readData(_gpsSerial: mySerial, mqtt: MqttService, fileUtil:FileUtil):
+    global dataList, now_time,cnt
     # 存储数据后发布到服务器
-    if len(dataList) >= 5 * 10:
+    if len(dataList) >= 1 * 10:
         model = json.dumps({"gnssData": dataList})
         mqtt.MqttPublish(topic="uwb", payload=model)
+        mqtt.mqtt_info
         if TimeUtil.getYearHourTimeStr() != now_time:
             now_time = TimeUtil.getYearHourTimeStr()
             fileUtil = FileUtil("./gnssData/" + TimeUtil.getYearDayTimeStr(), now_time + ".txt")
@@ -31,25 +33,22 @@ def readData(_gpsSerial: mySerial, _uwbSerial: mySerial, mqtt: MqttService, file
 
     if _gpsSerial.ser.in_waiting:
         gps_msg = _gpsSerial.ser.readline()
-        if _uwbSerial.ser.in_waiting:
-            TimeUtil.getMsTimeStr()
-            uwb_msg = _uwbSerial.ser.readline()
+        if cnt % 10 == 0:
             data = TimeUtil.getMsTimeStr() \
-                .__add__(",").__add__(gps_msg.decode('utf-8').strip('\n').strip('\r')) \
-                .__add__(",").__add__(uwb_msg.decode('utf-8'))
-            if len(data) > 120:
-                print("error")
-            else:
-                print(data)
-                dataList.append(data)
+                .__add__(",").__add__(gps_msg.decode('utf-8').strip('\n').strip('\r'))
+            print(data)
+            dataList.append(data)
+        cnt = cnt + 1
+
 
 
 def mqttPublish():
     mqtt = MqttService(on_connect_func=MqttService.mqttConnect)
     gpsSerial = mySerial(port=gps_port, btl=gps_btl)
-    uwbSerial = mySerial(port=uwb_port, btl=gps_btl)
+    # uwbSerial = mySerial(port=uwb_port, btl=gps_btl)
     fileUtil = FileUtil("./uwbData" + TimeUtil.getYearDayTimeStr(), now_time + ".txt")
-    RepeatingTimer(0.1, readData, (gpsSerial, uwbSerial, mqtt,fileUtil)).start()
+    RepeatingTimer(0.1, readData, (gpsSerial, mqtt, fileUtil)).start()
+
 
 
 def damon2():

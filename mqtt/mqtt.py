@@ -20,6 +20,7 @@ class MqttService:
         self.mqtt_info = None
         self.InitMqtt(on_connect_func)
 
+
     """
     初始化MQTT配置信息
     """
@@ -35,6 +36,7 @@ class MqttService:
         self.mqtt_info.on_connect = on_connect_func
         self.mqtt_info.username_pw_set(self.name, self.pwd)
         self.mqtt_info.connect(host=self.host, port=int(self.port), keepalive=int(self.keepalive))
+        self.mqtt_info.loop_start()
 
     """
     发布消息
