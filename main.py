@@ -23,7 +23,6 @@ def readData(_gpsSerial: mySerial, mqtt: MqttService, fileUtil:FileUtil):
     if len(dataList) >= 1 * 10:
         model = json.dumps({"gnssData": dataList})
         mqtt.MqttPublish(topic="uwb", payload=model)
-        mqtt.mqtt_info
         if TimeUtil.getYearHourTimeStr() != now_time:
             now_time = TimeUtil.getYearHourTimeStr()
             fileUtil = FileUtil("./gnssData/" + TimeUtil.getYearDayTimeStr(), now_time + ".txt")
