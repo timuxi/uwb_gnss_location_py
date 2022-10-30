@@ -35,14 +35,12 @@ class FileUtil:
         if not os.path.exists(path):
             os.makedirs(path)
         self.filename = path + filename
-        # 文件不存在则创建，存在则追加
-        if not os.path.exists(self.filename):
-            self.file = open(path + filename, "w")
-        else:
-            self.file = open(path + filename, "a")
 
     def write(self, content):
-        self.file.writelines(content)
+        if not os.path.exists(self.filename):
+            with open(self.filename, "w") as f:
+                f.write(content)
+        else:
+            with open(self.filename, "a") as f:
+                f.write(content)
 
-    def close(self):
-        self.file.close()
