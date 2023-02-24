@@ -1,6 +1,5 @@
-import turtle
+
 import matplotlib.pyplot as plt
-import numpy as np
 
 from tdoa import TDOA
 from utils.PltUtil import PltUtil
@@ -127,20 +126,4 @@ def data2(split=10):
 
 
 if __name__ == '__main__':
-    # data1(split=5)
-    data1_one_step(num=100)
-    # data2(split=5)
-    # data2_one_Step(num=10)
-
-    # gt = FileUtil.read_data(fileName="data/FGO_trajectoryllh_psr_dop_fusion.csv", sep=",")
-    # data = GnssUtil.getGnssData(gt[3],gt[2])
-    # plt.plot(data[0],data[1])
-    # gt = FileUtil.read_data(fileName="data/groundTruth_TST.csv", sep=",")
-    # data = GnssUtil.getGnssData(gt[3],gt[2])
-    # print(data)
-    # plt.plot(data[0],data[1])
-    # plt.show()
-    # fileutil = FileUtil("./","FGO_trajectoryllh_psr_dop_fusion_process.txt")
-    # plt.plot(data[0],data[1])
-    # for i in range(0,len(data[0])):
-    # fileutil.write(str(data[0][i])+","+str(data[1][i])+"\n")
+    data2()

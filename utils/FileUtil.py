@@ -6,13 +6,13 @@ import pandas
 
 class FileUtil:
     @staticmethod
-    def read_data(fileName, sep=" ", path='/Users/timuxi/PycharmProjects/mqtt/'):
+    def read_data(fileName, sep=" ", path='/Users/timuxi/code/PycharmProjects/mqtt/'):
         """
         _filename:   文件名
         """
         pathProject = path + fileName
         print('path: ' + pathProject)
-        pd_read = pandas.read_table(pathProject, sep=sep, header=None)
+        pd_read = pandas.read_csv(pathProject, sep=sep, header=None,error_bad_lines=False,)
         return pd_read
 
     @staticmethod

@@ -62,7 +62,6 @@ class TDOA:
         a_new = a
         a_new[:, 0] = a_new[:, 0] - x_v
         a_new[:, 1] = a_new[:, 1] - y_v
-        print(a_new)
 
         f_new = np.linalg.inv(a_new.transpose().dot(a_new))
 

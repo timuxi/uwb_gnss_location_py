@@ -9,4 +9,5 @@ class PltUtil:
     def pltCircle(a, b, r, color='y'):
         x = a + r * np.cos(PltUtil.theta)
         y = b + r * np.sin(PltUtil.theta)
-        plt.plot(x, y,color)
+        plt.plot(a, b, 'o', alpha=0.1, color='k')
+        plt.plot(x, y, alpha=0.1, color=color)
